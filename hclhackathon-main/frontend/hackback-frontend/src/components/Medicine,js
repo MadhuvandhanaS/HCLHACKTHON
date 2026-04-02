@@ -1,0 +1,86 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+function Medicines(){
+
+const navigate = useNavigate();
+
+const [medicines, setMedicines] = useState([]);
+
+useEffect(() => {
+
+axios.get("http://localhost:8080/api/medicine")
+
+.then(res => {
+setMedicines(res.data);
+})
+
+.catch(err => {
+alert("Failed to load medicines");
+});
+
+}, []);
+
+const selectMedicine = (medicine) => {
+
+localStorage.setItem("selectedMedicine", JSON.stringify(medicine));
+
+navigate("/prescription");
+
+};
+
+return(
+
+<div className="container">
+
+<h2>Available Medicines</h2>
+
+<table border="1">
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{medicines.map((med) => (
+
+<tr key={med.medicineId}>
+
+<td>{med.name}</td>
+<td>{med.description}</td>
+<td>{med.price}</td>
+<td>{med.stock}</td>
+
+<td>
+
+<button onClick={() => selectMedicine(med)}>
+Select
+</button>
+
+</td>
+
+</tr>
+
+))}
+
+</tbody>
+
+</table>
+
+</div>
+
+)
+
+}
+
+export default Medicines;
